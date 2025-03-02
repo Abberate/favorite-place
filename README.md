@@ -1,2 +1,0 @@
-# favorite-place
-favorite place
