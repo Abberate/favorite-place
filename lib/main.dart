@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'screens/places.dart';
 
+// AIzaSyBxgxnK_Zaac4Yc32LvRa_WUT3mZxr55Ig
+
 final colorScheme = ColorScheme.fromSeed(
   brightness: Brightness.dark,
   seedColor: const Color.fromARGB(255, 102, 6, 247),
@@ -27,13 +29,14 @@ void main() {
     ),
   );
 }
- 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Great Places',
       theme: theme,
       home: const PlacesScreen(),

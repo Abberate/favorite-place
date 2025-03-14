@@ -26,6 +26,10 @@ class PlacesList extends ConsumerWidget {
     return ListView.builder(
       itemCount: places.length,
       itemBuilder: (ctx, index) => ListTile(
+        leading: CircleAvatar(
+          backgroundImage: FileImage(places[index].image),
+          radius: 30,
+        ),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -42,9 +46,16 @@ class PlacesList extends ConsumerWidget {
               .titleMedium!
               .copyWith(color: Theme.of(context).colorScheme.onBackground),
         ),
+        subtitle: Text(
+          places[index].location.address,
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall!
+              .copyWith(color: Theme.of(context).colorScheme.onBackground),
+        ),
         trailing: IconButton(
           onPressed: () {
-            ref.read(userPlacesNotifier.notifier).removePlace(places[index].id);
+            ref.read(userPlacesProvider.notifier).removePlace(places[index].id);
           },
           icon: Icon(Icons.delete),
         ),
@@ -52,4 +63,3 @@ class PlacesList extends ConsumerWidget {
     );
   }
 }
- 

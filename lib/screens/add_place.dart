@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:favorite_places/models/place.dart';
 import 'package:favorite_places/providers/user_places.dart';
 import 'package:favorite_places/widgets/image_input.dart';
+import 'package:favorite_places/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,8 +19,15 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
 
   var _title;
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   void _savePlace() {
+    if (_formKey.currentState!.validate() &&
+        _selectedImage != null &&
+        _selectedLocation != null) {
+      _formKey.currentState!.save();
+    }
+
     if (_selectedImage == null) {
       showDialog(
         context: context,
@@ -62,11 +71,54 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
       );
       return;
     }
-    if (_formKey.currentState!.validate() && _selectedImage != null) {
-      _formKey.currentState!.save();
+
+    if (_selectedLocation == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            backgroundColor: Colors.white,
+            title: Row(
+              children: [
+                Icon(Icons.warning, color: Colors.red, size: 30),
+                SizedBox(width: 10),
+                Text(
+                  'Attention',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              'Merci de choisir la localisation!!!',
+              style: TextStyle(fontSize: 16),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OK',
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      return;
     }
 
-    ref.read(userPlacesNotifier.notifier).addPlace(_title, _selectedImage!);
+    ref
+        .read(userPlacesProvider.notifier)
+        .addPlace(_title, _selectedImage!, _selectedLocation!);
     Navigator.pop(context);
   }
 
@@ -106,6 +158,11 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               ImageInput(
                 onPickedImage: (File image) {
                   _selectedImage = image;
+                },
+              ),
+              LocationInput(
+                onSelectLocation: (location) {
+                  _selectedLocation = location;
                 },
               ),
               ElevatedButton.icon(
